@@ -24,4 +24,10 @@
       }
     }
 
+    public function get_last_ten_order($cc)
+    {
+      $cc = $this->db->escape($cc);
+      $query = $this->db->query("SELECT * FROM detail_order AS a INNER JOIN creditcard AS b ON a.order_id = b.order_id WHERE b.cc_number = $cc");
+    }
+
   }
