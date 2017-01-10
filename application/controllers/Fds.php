@@ -56,4 +56,16 @@ class Fds extends CI_Controller {
 
   }
 
+  //Negara Pemesan Berasal == Negara Credit Card
+  public function sc_check4()
+  {
+
+  }
+
+  //Pemesanan > rata2 10 transaksi
+  public function sc_check5()
+  {
+
+  }
+
 }

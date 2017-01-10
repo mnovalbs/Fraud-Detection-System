@@ -1,3 +1,3 @@
-<?php 
-echo"FDS Project";
+<?php
+echo "FDS Project";
 ?>
