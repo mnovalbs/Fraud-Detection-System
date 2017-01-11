@@ -17,4 +17,10 @@
       echo json_encode($this->customer_model->get_recorded_ip());
     }
 
+    public function ret_json()
+    {
+      $penumpang = $this->input->post('penumpang');
+      print_r($penumpang);
+    }
+
   }

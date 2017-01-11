@@ -36,4 +36,4 @@
   </div>
 </div>
 
-<button type="button" class='btn btn-order' onclick="checkout()">Submit</button>
+<button type="button" class='btn btn-order' onclick="cc_check()">Submit</button>

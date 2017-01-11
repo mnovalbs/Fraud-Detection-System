@@ -1,5 +1,6 @@
 <?php
-/** Noval Bintang
+	date_default_timezone_set('Asia/Jakarta');
+/**
  * CodeIgniter
  *
  * An open source application development framework for PHP

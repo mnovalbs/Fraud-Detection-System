@@ -92,20 +92,68 @@
       echo json_encode($out);
   	}
 
-    public function add_penumpang()
+    public function tambah_penumpang()
     {
-      $key = $this->input->post('order_key');
-      $tipe = $this->input->post('tipe');
-      $title = $this->input->post('title');
-      $nama = $this->input->post('nama');
-      $tgl_lahir = $this->input->post('tgl_lahir');
-      $bulan_lahir = $this->input->post('bulan_lahir');
-      $tahun_lahir = $this->input->post('tahun_lahir');
+      $penumpangs = $this->input->post('penumpang');
+      print_r($penumpangs);
+      foreach ($penumpangs as $penumpang) {
+        $this->add_penumpang($penumpang['key'], $penumpang['tipe'], $penumpang['title'], $penumpang['nama'], $penumpang['tanggal_lahir'], $penumpang['bulan_lahir'], $penumpang['tahun_lahir']);
+      }
+    }
 
-      $tgl_lahir = $tahun_lahir."-".$bulan_lahir."-".$tgl_lahir;
+    public function add_penumpang($key, $tipe, $title, $nama, $tgl_lahir, $bulan_lahir, $tahun_lahir)
+    {
+      // $key = $this->input->post('order_key');
+      // $tipe = (int)$this->input->post('tipe');
+      // $title = (int)$this->input->post('title');
+      // $nama = $this->input->post('nama');
+      // $tgl_lahir = $this->input->post('tgl_lahir');
+      // $bulan_lahir = $this->input->post('bulan_lahir');
+      // $tahun_lahir = $this->input->post('tahun_lahir');
 
-      $this->load->model('customer_model');
-      $this->customer_model->add_penumpang($key, $nama, $title, $tipe, $tgl_lahir);
+      $valid = 1;
+      $error = array();
+      if(empty($key)){
+        $valid = 0;
+        array_push($error, "Key error");
+      }
+      if(empty($tipe)){
+        $valid = 0;
+        array_push($error, "Tipe error");
+      }
+      if(empty($title)){
+        $valid = 0;
+        array_push($error, "Title error");
+      }
+      if(empty($nama)){
+        $valid = 0;
+        array_push($error, "Nama error");
+      }
+      if(empty($tgl_lahir)){
+        $valid = 0;
+        array_push($error, "Tanggal lahir error");
+      }
+      if(empty($bulan_lahir)){
+        $valid = 0;
+        array_push($error, "Bulan lahir error");
+      }
+      if(empty($tahun_lahir)){
+        $valid = 0;
+        array_push($error, "Tahun lahir error");
+      }
+
+      if($valid == 1){
+        $tgl_lahir = $tahun_lahir."-".$bulan_lahir."-".$tgl_lahir;
+
+        $this->load->model('customer_model');
+        $this->customer_model->add_penumpang($key, $nama, $title, $tipe, $tgl_lahir);
+        $status = "OK";
+      }else{
+        $status = "FAIL";
+      }
+      $our['status'] = $status;
+      $out['error'] = $error;
+      echo json_encode($out);
     }
 
   }

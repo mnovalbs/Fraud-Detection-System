@@ -43,7 +43,13 @@
       $title = (int)$title;
       $tipe = (int)$tipe;
       $tgl_lahir = $this->db->escape($tgl_lahir);
-      $query = $this->db->query("INSERT INTO penumpang (order_key, nama_penumpang, title, tipe, tanggal_lahir) VALUES ($key, $nama, $title, $tipe, $tgl_lahir)");
+      return $query = $this->db->query("INSERT INTO penumpang (order_key, nama_penumpang, title, tipe, tanggal_lahir) VALUES ($key, $nama, $title, $tipe, $tgl_lahir)");
+    }
+
+    public function accept_order($key)
+    {
+      $key = $this->db->escape($key);
+      $query = $this->db->query("UPDATE detail_order SET status = 1 WHERE order_key = $key");
     }
 
   }

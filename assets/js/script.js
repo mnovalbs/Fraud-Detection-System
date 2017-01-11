@@ -11,6 +11,8 @@
     harga : "",
     kunci : "",
     ipaddress : "",
+    cc_name : "",
+    cc_number : "",
   }
   var form_penumpang = '';
   $.get(base_url('home/form_penumpang'),function(data){
@@ -190,7 +192,6 @@
     });
 
     if(valid==1){
-
       $.ajax({
         url : base_url('customer/add_detail_order'),
         type : 'POST',
@@ -202,40 +203,96 @@
             $.each(data.error, function(index, element){
               console.log(element);
             });
+          }else{
+            add_penumpang();
+          }
+        }
+      });
+    }
+
+  }
+
+  function add_penumpang()
+  {
+    var berhasil_penumpang = 1;
+    var arr_penumpang = [];
+    $(".penumpang").each(function(){
+      var tipe = $(this).attr('tipe');
+      var title_penumpang = $(this).find('.title_penumpang').val();
+      var nama_penumpang = $(this).find('.nama_penumpang').val();
+      var tanggal_lahir = $(this).find('.tanggal_lahir').val();
+      var bulan_lahir = $(this).find('.bulan_lahir').val();
+      var tahun_lahir = $(this).find('.tahun_lahir').val();
+
+      var penumpang = {
+        key : pesanan.kunci,
+        tipe : tipe,
+        title : title_penumpang,
+        nama : nama_penumpang,
+        tanggal_lahir : tanggal_lahir,
+        bulan_lahir : bulan_lahir,
+        tahun_lahir : tahun_lahir,
+      }
+
+      arr_penumpang.push(penumpang);
+
+    });
+
+    $.ajax({
+      url : base_url('customer/tambah_penumpang'),
+      type : 'POST',
+      // dataType : 'json',
+      data : {penumpang:arr_penumpang},
+      success : function(data){
+        // console.log(data);
+        // if(data.status == 'FAIL'){
+        //   berhasil_penumpang = 0;
+        //   $.each(data.error, function(index, element){
+        //     console.log(element);
+        //   });
+        // }
+        $("#form-pembayaran").fadeIn();
+        $("#form-penumpang").fadeOut();
+      }
+    });
+  }
+
+  function cc_check()
+  {
+    var cc_name = $("#nama_cc").val();
+    var cc_number = $("#nomor_cc").val();
+    var cc_month = $("#bulan_cc").val();
+    var cc_year = $("#tahun_cc").val();
+    var cc_cvv = $("#cvv_cc").val();
+
+    if( cc_name && cc_number && cc_month && cc_year && cc_cvv ){
+      pesanan.cc_name = cc_name;
+      pesanan.cc_number = cc_number;
+
+      $.ajax({
+        url : base_url('fds/score_card_check'),
+        type : 'POST',
+        data : {key:pesanan.kunci,email:pesanan.email,ip:pesanan.ipaddress,cc:pesanan.cc_number,harga:pesanan.harga,nama_pemesan:pesanan.nama_pemesan,nama_cc:pesanan.cc_name},
+        dataType : 'json',
+        success : function(data){
+          if(data.status=='OK'){
+            alert(data.cc_status);
+            console.log("Fraud Score : "+data.fraud_score);
+            $.each(data.pesan_fraud, function(index, element){
+              console.log(element);
+            });
+          }else{
+            alert("Pesanan Gagal!");
+            $.each(data.error, function(index,element){
+              console.log(element);
+            });
           }
         }
       });
 
-      $(".penumpang").each(function(){
-        var tipe = $(this).attr('tipe');
-        var title_penumpang = $(this).find('.title_penumpang').val();
-        var nama_penumpang = $(this).find('.nama_penumpang').val();
-        var tanggal_lahir = $(this).find('.tanggal_lahir').val();
-        var bulan_lahir = $(this).find('.bulan_lahir').val();
-        var tahun_lahir = $(this).find('.tahun_lahir').val();
-
-        $.ajax({
-          url : base_url('customer/add_penumpang'),
-          type : 'POST',
-          data : {order_key:pesanan.kunci,tipe:tipe,title:title_penumpang,nama:nama_penumpang,tgl_lahir:tanggal_lahir,bulan_lahir:bulan_lahir,tahun_lahir:tahun_lahir},
-          success : function(data){
-            console.log("Order Key : "+pesanan.kunci);
-            console.log("Tipe : "+tipe);
-            console.log("Title : "+title_penumpang);
-            console.log("Nama : "+nama_penumpang);
-            console.log("Tgl Lahir : "+tanggal_lahir);
-            console.log("Bln Lahir : "+bulan_lahir);
-            console.log("Thn Lahir : "+tahun_lahir);
-          }
-        });
-
-      });
-
-      $("#form-pembayaran").fadeIn();
-      $("#form-penumpang").fadeOut();
-
+    }else{
+      alert("Semua data Credit Cart wajib terisi!");
     }
-
   }
 
   // $("body").bind("DOMSubtreeModified", function() {
