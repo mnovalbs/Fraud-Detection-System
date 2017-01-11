@@ -6,6 +6,6 @@
       }
     </script>
     <script src='<?php echo base_url('assets/js/jquery.min.js'); ?>'></script>
-    <script src='<?php echo base_url('assets/js/script.js'); ?>'></script>
+    <script src='<?php echo base_url('assets/js/script.js?ver='.date("YmdHis")); ?>'></script>
   </body>
 </html>

@@ -1,6 +1,8 @@
   var pesanan = {
     kota_asal : "",
     kota_tujuan : "",
+    nama_pemesan : "",
+    email : "",
     tgl_berangkat : "",
     passenger_adult : 0,
     passenger_child : 0,
@@ -8,6 +10,7 @@
     maskapai : "",
     harga : "",
     kunci : "",
+    ipaddress : "",
   }
   var form_penumpang = '';
   $.get(base_url('home/form_penumpang'),function(data){
@@ -67,12 +70,15 @@
 
   $(window).bind("load resize", function(){
     var tinggi_layar = $(window).height();
-    $(".middle-center").css('top', (tinggi_layar-$(".middle-center").height())/2 - 30 );
+    if(tinggi_layar > $(".middle-center").height()){
+      $(".middle-center").css('top', (tinggi_layar-$(".middle-center").height())/2 - 30 );
+    }
   });
 
   function order()
   {
-
+    var nama_pemesan = $("#nama_pemesan").val();
+    var email_pemesan = $("#email_pemesan").val();
     var passenger_adult = parseInt( $("#penumpang_dewasa").val() );
     var passenger_child = parseInt( $("#penumpang_anak").val() );
     var passenger_infant = parseInt( $("#penumpang_bayi").val() );
@@ -82,12 +88,23 @@
     var harga = parseInt($("#harga").val());
     var maskapai = $("#maskapai").val();
     var benar = 1;
+    var ipaddress = $("#ipaddress").val();
 
     if( (passenger_adult > 0 && passenger_adult < 8) && (passenger_child >= 0 && passenger_child <= 6) && (passenger_infant >= 0 && passenger_infant <= 4)){
 
     }else{
       benar = 0;
       alert("Passenger tidak sesuai");
+    }
+
+    if(!nama_pemesan){
+      benar = 0;
+      alert("Nama pemesan harus terisi");
+    }
+
+    if(!email_pemesan){
+      benar = 0;
+      alert("Email harus terisi");
     }
 
     if(harga <= 0){
@@ -100,43 +117,94 @@
       alert("Pilih maskapai!");
     }
 
-    if(benar == 1){
-      var diEncrypt = Date.now()+(Math.random()*1000);
-      pesanan.kota_asal = kota_asal;
-      pesanan.kota_tujuan = kota_tujuan;
-      pesanan.tgl_berangkat = tanggal;
-      pesanan.passenger_adult = passenger_adult;
-      pesanan.passenger_child = passenger_child;
-      pesanan.passenger_infant = passenger_infant;
-      pesanan.kunci = SHA1(diEncrypt.toString());
-      $("#form-penumpang").fadeIn();
-      $("#form-order").fadeOut();
+    // if(!ipaddress){
+    //   benar = 0;
+    //   alert("Isikan IP Address");
+    // }
 
-      for(i=1;i<=pesanan.passenger_adult;i++){
-        $("#form-penumpang").append("<h3>Penumpang Dewasa "+i+"</h3>");
-        $("#form-penumpang").append("<div class='penumpang' tipe='1'>"+form_penumpang+"</div>");
+    $.ajax({
+      url : base_url('json/is_valid_ip/'+ipaddress),
+      dataType : 'json',
+      success : function(data){
+        if(!data){
+          benar = 0;
+          alert("IP Address tidak valid");
+        }
+
+        if(benar == 1){
+          var diEncrypt = Date.now()+(Math.random()*1000);
+          pesanan.kota_asal = kota_asal;
+          pesanan.kota_tujuan = kota_tujuan;
+          pesanan.tgl_berangkat = tanggal;
+          pesanan.passenger_adult = passenger_adult;
+          pesanan.passenger_child = passenger_child;
+          pesanan.passenger_infant = passenger_infant;
+          pesanan.ipaddress = ipaddress;
+          pesanan.nama_pemesan = nama_pemesan;
+          pesanan.email = email_pemesan;
+          pesanan.kunci = SHA1(diEncrypt.toString());
+          pesanan.harga = harga;
+          pesanan.maskapai = maskapai;
+          $("#form-penumpang").fadeIn();
+          $("#form-order").fadeOut();
+
+          for(i=1;i<=pesanan.passenger_adult;i++){
+            $("#form-penumpang").append("<h3>Penumpang Dewasa "+i+"</h3>");
+            $("#form-penumpang").append("<div class='penumpang' tipe='1'>"+form_penumpang+"</div>");
+          }
+
+          for(i=1;i<=pesanan.passenger_child;i++){
+            $("#form-penumpang").append("<h3>Penumpang Anak "+i+"</h3>");
+            $("#form-penumpang").append("<div class='penumpang' tipe='2'>"+form_penumpang+"</div>");
+          }
+
+          for(i=1;i<=pesanan.passenger_infant;i++){
+            $("#form-penumpang").append("<h3>Penumpang Bayi "+i+"</h3>");
+            $("#form-penumpang").append("<div class='penumpang' tipe='3'>"+form_penumpang+"</div>");
+          }
+
+          $("#form-penumpang").append("<button type='button' onclick='checkout()' class='btn btn-order'>Checkout</button>");
+
+        }
+
       }
-
-      for(i=1;i<=pesanan.passenger_child;i++){
-        $("#form-penumpang").append("<h3>Penumpang Anak "+i+"</h3>");
-        $("#form-penumpang").append("<div class='penumpang' tipe='2'>"+form_penumpang+"</div>");
-      }
-
-      for(i=1;i<=pesanan.passenger_infant;i++){
-        $("#form-penumpang").append("<h3>Penumpang Bayi "+i+"</h3>");
-        $("#form-penumpang").append("<div class='penumpang' tipe='3'>"+form_penumpang+"</div>");
-      }
-
-      $("#form-penumpang").append("<button type='button' onclick='checkout()' class='btn btn-order'>Checkout</button>");
-
-    }
+    });
 
   }
 
-  $("body").bind("DOMSubtreeModified", function() {
+  function checkout(){
+    var valid = 1;
 
-    function checkout(){
-      var valid = 1;
+    $(".penumpang").each(function(){
+      var tipe = $(this).attr('tipe');
+      var title_penumpang = $(this).find('.title_penumpang').val();
+      var nama_penumpang = $(this).find('.nama_penumpang').val();
+      var tanggal_lahir = $(this).find('.tanggal_lahir').val();
+      var bulan_lahir = $(this).find('.bulan_lahir').val();
+      var tahun_lahir = $(this).find('.tahun_lahir').val();
+
+      if( !tipe || !title_penumpang || !nama_penumpang || !tanggal_lahir || !bulan_lahir || !tahun_lahir ){
+        valid = 0;
+      }
+
+    });
+
+    if(valid==1){
+
+      $.ajax({
+        url : base_url('customer/add_detail_order'),
+        type : 'POST',
+        data : {order_key:pesanan.kunci,nama_pemesan:pesanan.nama_pemesan,harga:pesanan.harga,email:pesanan.email,kota_asal:pesanan.kota_asal,kota_tujuan:pesanan.kota_tujuan,tanggal_berangkat:pesanan.tgl_berangkat,airline:pesanan.maskapai,ipaddress:pesanan.ipaddress},
+        dataType : 'json',
+        success : function(data){
+          // console.log(data);
+          if(data.status == 'FAIL'){
+            $.each(data.error, function(index, element){
+              console.log(element);
+            });
+          }
+        }
+      });
 
       $(".penumpang").each(function(){
         var tipe = $(this).attr('tipe');
@@ -146,13 +214,44 @@
         var bulan_lahir = $(this).find('.bulan_lahir').val();
         var tahun_lahir = $(this).find('.tahun_lahir').val();
 
-        if( !tipe || !title_penumpang || !nama_penumpang || !tanggal_lahir || !bulan_lahir || !tahun_lahir ){
-          valid = 0;
-        }
+        $.ajax({
+          url : base_url('customer/add_penumpang'),
+          type : 'POST',
+          data : {order_key:pesanan.kunci,tipe:tipe,title:title_penumpang,nama:nama_penumpang,tgl_lahir:tanggal_lahir,bulan_lahir:bulan_lahir,tahun_lahir:tahun_lahir},
+          success : function(data){
+            console.log("Order Key : "+pesanan.kunci);
+            console.log("Tipe : "+tipe);
+            console.log("Title : "+title_penumpang);
+            console.log("Nama : "+nama_penumpang);
+            console.log("Tgl Lahir : "+tanggal_lahir);
+            console.log("Bln Lahir : "+bulan_lahir);
+            console.log("Thn Lahir : "+tahun_lahir);
+          }
+        });
 
       });
+
+      $("#form-pembayaran").fadeIn();
+      $("#form-penumpang").fadeOut();
+
     }
 
+  }
+
+  // $("body").bind("DOMSubtreeModified", function() {
+  //
+  // });
+
+  $("#ipaddress_list").ready(function(){
+    $.ajax({
+      url : base_url('json/get_recorded_ip'),
+      dataType : 'json',
+      success : function(data){
+        $.each(data, function(index, element){
+          $("#ipaddress_list").append("<option value='"+element.ip_address+"'>");
+        });
+      }
+    });
   });
 
 

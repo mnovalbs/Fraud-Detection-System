@@ -1,5 +1,9 @@
 
   <div id='form-order' class='middle-center form-ungu'>
+    <div class='form-group'>
+      <label>Nama Pemesan</label>
+      <input id='nama_pemesan' class='form-control' placeholder='Nama Pemesan'/>
+    </div>
     <div class='row'>
       <div class='col-sm-6'>
         <div class='form-group'>
@@ -58,10 +62,20 @@
         </div>
       </div>
     </div>
-    <div class='form-group'>
-      <label>IP Address</label>
-      <input list='ipaddress' class='form-control'/>
-      <datalist id='ipaddress'></datalist>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div class='form-group'>
+          <label>Email</label>
+          <input class='form-control' type='email' id='email_pemesan' placeholder='Email'/>
+        </div>
+      </div>
+      <div class='col-sm-6'>
+        <div class='form-group'>
+          <label>IP Address</label>
+          <input list='ipaddress_list' id='ipaddress' class='form-control' placeholder='IP Address'/>
+          <datalist id='ipaddress_list'></datalist>
+        </div>
+      </div>
     </div>
     <button type='button' onclick='order()' class='btn btn-order'>Order!</button>
   </div>

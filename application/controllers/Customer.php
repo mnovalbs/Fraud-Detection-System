@@ -22,7 +22,7 @@
   		$harga = (int)$this->input->post('harga');
       if($harga <= 0){
         $valid = 0;
-        array_push($error, "Harga barang tidak sesuai");
+        array_push($error, "Harga (".$harga.") tidak sesuai");
       }
 
   		$email = trim($this->input->post('email'));
@@ -54,16 +54,16 @@
         array_push($error, "Tanggal berangkat masih tidak terisi");
       }
 
-  		$tanggal_datang = trim($this->input->post('tanggal_datang'));
-      if(empty($tanggal_datang)){
-        $valid = 0;
-        array_push($error, "Tanggal kedatangan masih tidak terisi");
-      }
-
   		$airline = trim($this->input->post('airline'));
       if(empty($airline)){
         $valid = 0;
         array_push($error, "Airline masih tidak terisi");
+      }
+
+      $ip_address = $this->input->post('ipaddress');
+      if(!filter_var($ip_address, FILTER_VALIDATE_IP)){
+        $valid = 0;
+        array_push($error, "IP Address tidak valid");
       }
 
       if($valid == 1){
@@ -74,15 +74,38 @@
 
       $out['error'] = $error;
 
-  		$ip_address = get_client_ip();
   		$order_time = date("Y-m-d H:i:s");
   		$status = 0;
 
       if($valid==1){
-
+        $this->load->model('customer_model');
+        $is_registered = 0;
+        if($this->customer_model->is_registered($email)){
+          $is_registered = 1;
+        }
+        if(!$this->customer_model->add_order($order_key, $nama_pemesan, $is_registered, $harga, $email, $kota_asal, $kota_tujuan, $tanggal_berangkat, $airline, $ip_address, $order_time, $status)){
+          $out['status'] = "FAIL";
+          array_push($out['error'],"Pesanan gagal ditambahkan");
+        }
       }
 
       echo json_encode($out);
   	}
+
+    public function add_penumpang()
+    {
+      $key = $this->input->post('order_key');
+      $tipe = $this->input->post('tipe');
+      $title = $this->input->post('title');
+      $nama = $this->input->post('nama');
+      $tgl_lahir = $this->input->post('tgl_lahir');
+      $bulan_lahir = $this->input->post('bulan_lahir');
+      $tahun_lahir = $this->input->post('tahun_lahir');
+
+      $tgl_lahir = $tahun_lahir."-".$bulan_lahir."-".$tgl_lahir;
+
+      $this->load->model('customer_model');
+      $this->customer_model->add_penumpang($key, $nama, $title, $tipe, $tgl_lahir);
+    }
 
   }
