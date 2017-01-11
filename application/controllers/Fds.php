@@ -32,7 +32,7 @@ class Fds extends CI_Controller {
   }
 
   //Apakah Nama Pemegang Kartu == Nama Pemesan
-  public function sc_check1()
+  protected function sc_check1()
   {
     $nama_cc = $this->input->post('nama_cc');
     $nama_pemesan = $this->input->post('nama_pemesan');
@@ -45,27 +45,33 @@ class Fds extends CI_Controller {
   }
 
   //Pemesanan Dalam Jumlah Berdekatan
-  public function sc_check2()
+  protected function sc_check2()
   {
 
   }
 
   //CC Berasal Dari High Risk Country
-  public function sc_check3()
+  protected function sc_check3()
   {
 
   }
 
   //Negara Pemesan Berasal == Negara Credit Card
-  public function sc_check4()
+  protected function sc_check4()
   {
 
   }
 
   //Pemesanan > rata2 10 transaksi
-  public function sc_check5()
+  protected function sc_check5()
   {
-
+		$this->load->model('fds_model');
+		$transaksi = $this->fds_model->get_last_ten_order();
+		$total = 0;
+		foreach ($transaksi as $tr) {
+			$total += $tr['harga'];
+		}
+		$avg = $total/count($transaksi);
   }
 
 }

@@ -1,0 +1,29 @@
+body{
+    background: #352a75 url('../images/bg.jpg');
+    background: #5442a1;
+    background-size: cover;
+}
+.form-ungu {
+    /*background: #5442a1;*/
+    background: rgba(84, 66, 161, 0.48);
+    padding: 20px;
+    margin: 10px auto;
+    border-radius: 5px;
+    color: #fff;
+    max-width: 600px;
+}
+.middle-center{
+    position: relative;
+}
+.btn.btn-order {
+    width: 100%;
+    background: rgba(255, 199, 0, 0.79);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.btn.btn-order:hover{
+    background: rgba(255, 199, 0, 1);
+}
+#form-penumpang{
+    display: none;
+}
