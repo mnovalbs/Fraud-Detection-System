@@ -59,4 +59,6 @@ echo "<option value='".$i."'>".$i."</option>";
 <button type="button" onclick="alert('Data Submitted')">Submit</button>
 </center>
 
+
+<input type="date">
 </form>
