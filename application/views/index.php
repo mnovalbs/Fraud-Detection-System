@@ -12,6 +12,8 @@
     ?>
   </div>
 
+  <div id='pesan'></div>
+
   <?php
 
   $this->load->view('footer');

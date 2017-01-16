@@ -31,3 +31,17 @@ body{
 #form-pembayaran{
     display: none;
 }
+
+#pesan {
+    color: #5442a1;
+    display: none;
+    background: rgba(255, 199, 0, 0.85);
+    max-width: 500px;
+    margin: 30px auto;
+    text-align: center;
+    font-weight: bold;
+    padding: 30px;
+    font-size: 35px;
+    box-shadow: 0 0 3px #333;
+    border-radius: 5px;
+}

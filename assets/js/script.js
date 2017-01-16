@@ -272,11 +272,16 @@
       $.ajax({
         url : base_url('fds/score_card_check'),
         type : 'POST',
-        data : {key:pesanan.kunci,email:pesanan.email,ip:pesanan.ipaddress,cc:pesanan.cc_number,harga:pesanan.harga,nama_pemesan:pesanan.nama_pemesan,nama_cc:pesanan.cc_name},
+        data : {key:pesanan.kunci,email:pesanan.email,ip:pesanan.ipaddress,cc:pesanan.cc_number,harga:pesanan.harga,nama_pemesan:pesanan.nama_pemesan,nama_cc:pesanan.cc_name,bulan:cc_month,tahun:cc_year},
         dataType : 'json',
         success : function(data){
           if(data.status=='OK'){
-            alert(data.cc_status);
+            // alert(data.cc_status);
+            $("#pesan").html(data.cc_status);
+
+            $("#pesan").fadeIn();
+            $("#form-pembayaran").fadeOut();
+
             console.log("Fraud Score : "+data.fraud_score);
             $.each(data.pesan_fraud, function(index, element){
               console.log(element);

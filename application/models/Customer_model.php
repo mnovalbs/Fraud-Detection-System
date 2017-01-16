@@ -52,4 +52,15 @@
       $query = $this->db->query("UPDATE detail_order SET status = 1 WHERE order_key = $key");
     }
 
+    public function accept_cc($key, $cc, $nama_cc, $bulan_expired, $tahun_expired)
+    {
+      $key = $this->db->escape($key);
+      $cc = $this->db->escape($cc);
+      $nama_cc = $this->db->escape($nama_cc);
+      $bulan_expired = (int)$bulan_expired;
+      $tahun_expired = (int)$tahun_expired;
+
+      $query = $this->db->query("INSERT INTO creditcard (order_key, cc_number, nama_cc, bulan_expired, tahun_expired) VALUES ($key, $cc, $nama_cc, $bulan_expired, $tahun_expired)");
+    }
+
   }

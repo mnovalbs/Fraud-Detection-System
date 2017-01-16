@@ -7,18 +7,16 @@ class Fds extends CI_Controller {
 	{
 	}
 
-  public function is_cc_blacklisted()
+  public function is_cc_blacklisted($cc)
   {
     $this->load->model('fds_model');
-    $cc = $this->input->post('cc_number');
-    echo json_encode($this->fds_model->is_cc_blacklisted($cc));
+    return $this->fds_model->is_cc_blacklisted($cc);
   }
 
-  public function is_email_blacklisted()
+  public function is_email_blacklisted($email)
   {
     $this->load->model('fds_model');
-    $email = $this->input->post('email');
-    echo json_encode($this->fds_model->is_email_blacklisted($email));
+    return $this->fds_model->is_email_blacklisted($email);
   }
 
   public function score_card_check()
@@ -30,6 +28,8 @@ class Fds extends CI_Controller {
 		$harga = $this->input->post('harga');
 		$nama_pemesan = $this->input->post('nama_pemesan');
 		$nama_cc = $this->input->post('nama_cc');
+		$bulan_expired = $this->input->post('bulan');
+		$tahun_expired = $this->input->post('tahun');
 
 		$valid = true;
 		$error = array();
@@ -60,94 +60,114 @@ class Fds extends CI_Controller {
 		}
 
 		if($valid){
-			$fraud_score = 0;
+
+			$reject = false;
 			$pesan_fraud = array();
-
-			#1 Nama Pemesan == Nama Credit Card
-			if(!$this->sc_check1($nama_pemesan, $nama_cc)){
-				$fraud_score += 10;
-				array_push($pesan_fraud, "[-] Nama Pemesan != Nama Credit Card");
-			}else{
-				array_push($pesan_fraud, "[+] Nama Pemesan == Nama Credit Card");
+			if($this->is_email_blacklisted($email)){
+				$reject = true;
+				array_push($pesan_fraud, "[-] Email blacklisted");
+			}
+			if($this->is_cc_blacklisted($cc)){
+				$reject = true;
+				array_push($pesan_fraud, "[-] CC Blacklisted");
 			}
 
-			#2 Transaksi Dalam Jumlah Besar Berdekatan (12 Jam)
-			if($this->sc_check2($harga,$cc)){
-				$fraud_score += 5;
-				array_push($pesan_fraud, "[-] Transaksi dalam jumlah besar berdekatan");
-			}else{
-				array_push($pesan_fraud, "[+] Tidak ada transaksi dalam jumlah besar berdekatan");
-			}
+			if(!$reject){
+				$fraud_score = 0;
 
-			#3 CC Berasal Dari High Risk Country
-			if($this->sc_check3($cc)){
-				$fraud_score += 10;
-				array_push($pesan_fraud, "[-] CC berasal dari high risk country");
-			}else{
-				array_push($pesan_fraud, "[+] CC bukan berasal dari high risk country");
-			}
+				#1 Nama Pemesan == Nama Credit Card
+				if(!$this->sc_check1($nama_pemesan, $nama_cc)){
+					$fraud_score += 10;
+					array_push($pesan_fraud, "[-] Nama Pemesan != Nama Credit Card");
+				}else{
+					array_push($pesan_fraud, "[+] Nama Pemesan == Nama Credit Card");
+				}
 
-			#4 Negara IP == Negara Credit Cart
-			// if(!$this->sc_check4($ip,$cc)){
-			// 	$fraud_score += 10;
-			// 	array_push($pesan_fraud, "[-] Negara pemesan tidak sama dengan negara pemilik CC");
-			// }else{
-			// 	array_push($pesan_fraud, "[+] Negara pemesan sama dengan negara pemilik CC");
-			// }
+				#2 Transaksi Dalam Jumlah Besar Berdekatan (12 Jam)
+				if($this->sc_check2($harga,$cc)){
+					$fraud_score += 5;
+					array_push($pesan_fraud, "[-] Transaksi dalam jumlah besar berdekatan");
+				}else{
+					array_push($pesan_fraud, "[+] Tidak ada transaksi dalam jumlah besar berdekatan");
+				}
 
-			#5 Transaksi Baru Lebih Besar Dari Rata2 10 Transaksi
-			if($this->sc_check5($harga,$cc)){
-				$fraud_score += 5;
-				array_push($pesan_fraud, "[-] Transaksi baru lebih besar dari rata-rata 10 transaksi");
-			}else{
-				array_push($pesan_fraud, "[+] Transaksi baru tidak lebih besar dari rata-rata 10 transaksi");
-			}
+				#3 CC Berasal Dari High Risk Country
+				if($this->sc_check3($cc)){
+					$fraud_score += 10;
+					array_push($pesan_fraud, "[-] CC berasal dari high risk country");
+				}else{
+					array_push($pesan_fraud, "[+] CC bukan berasal dari high risk country");
+				}
 
-			#6 IP Berubah Secara Cepat (12 Jam)
-			if($this->sc_check6($ip,$cc)){
-				$fraud_score += 15;
-				array_push($pesan_fraud, "[-] IP berubah secara cepat (dalam 12 jam)");
-			}else{
-				array_push($pesan_fraud, "[+] IP tidak berubah secara cepat (dalam 12 jam)");
-			}
+				#4 Negara IP == Negara Credit Cart
+				// if(!$this->sc_check4($ip,$cc)){
+				// 	$fraud_score += 10;
+				// 	array_push($pesan_fraud, "[-] Negara pemesan tidak sama dengan negara pemilik CC");
+				// }else{
+				// 	array_push($pesan_fraud, "[+] Negara pemesan sama dengan negara pemilik CC");
+				// }
 
-			#7 Menggunakan Multiple CC dalam 3 Hari
-			if($this->sc_check7($ip)){
-				$fraud_score += 15;
-				array_push($pesan_fraud, "[-] Menggunakan multiple CC dalam 3 hari terakhir");
-			}else{
-				array_push($pesan_fraud, "[+] Tidak menggunakan multiple CC dalam 3 hari terakhir");
-			}
+				#5 Transaksi Baru Lebih Besar Dari Rata2 10 Transaksi
+				if($this->sc_check5($harga,$cc)){
+					$fraud_score += 5;
+					array_push($pesan_fraud, "[-] Transaksi baru lebih besar dari rata-rata 10 transaksi");
+				}else{
+					array_push($pesan_fraud, "[+] Transaksi baru tidak lebih besar dari rata-rata 10 transaksi");
+				}
 
-			#8 Terdaftar sebagai member
-			if(!$this->sc_check8($email)){
-				$fraud_score += 15;
-				array_push($pesan_fraud, "[-] Tidak terdaftar sebagai member");
-			}else{
-				array_push($pesan_fraud, "[+] Terdaftar sebagai member");
-			}
+				#6 IP Berubah Secara Cepat (12 Jam)
+				if($this->sc_check6($ip,$cc)){
+					$fraud_score += 15;
+					array_push($pesan_fraud, "[-] IP berubah secara cepat (dalam 12 jam)");
+				}else{
+					array_push($pesan_fraud, "[+] IP tidak berubah secara cepat (dalam 12 jam)");
+				}
 
-			#9 Transaksi Sukses Sebelumnya
-			if(!$this->sc_check9($email)){
-				$fraud_score += 5;
-				array_push($pesan_fraud, "[-] Transaksi sebelumnya tidak berhasil");
-			}else{
-				array_push($pesan_fraud, "[-] Transaksi sebelumnya berhasil");
-			}
+				#7 Menggunakan Multiple CC dalam 3 Hari
+				if($this->sc_check7($ip)){
+					$fraud_score += 10;
+					array_push($pesan_fraud, "[-] Menggunakan multiple CC dalam 3 hari terakhir");
+				}else{
+					array_push($pesan_fraud, "[+] Tidak menggunakan multiple CC dalam 3 hari terakhir");
+				}
 
-			if($fraud_score <= 30){
-				$out['cc_status'] = "ACCEPTED";
-				$this->load->model('customer_model');
-				$this->customer_model->accept_order($key);
-			}else if($fraud_score > 30 && $fraud_score <= 40){
-				$out['cc_status'] = "WAITING FOR REVIEW";
+				#8 Terdaftar sebagai member
+				if(!$this->sc_check8($email)){
+					$fraud_score += 5;
+					array_push($pesan_fraud, "[-] Tidak terdaftar sebagai member");
+				}else{
+					array_push($pesan_fraud, "[+] Terdaftar sebagai member");
+				}
+
+				#9 Transaksi Sukses Sebelumnya
+				if(!$this->sc_check9($email)){
+					$fraud_score += 5;
+					array_push($pesan_fraud, "[-] Transaksi sebelumnya tidak berhasil");
+				}else{
+					array_push($pesan_fraud, "[-] Transaksi sebelumnya berhasil");
+				}
+
+				if($fraud_score <= 30){
+					$out['cc_status'] = "ACCEPTED";
+					$this->load->model('customer_model');
+					$this->customer_model->accept_order($key);
+					$this->customer_model->accept_cc($key, $cc, $nama_cc, $bulan_expired, $tahun_expired);
+				}else if($fraud_score > 30 && $fraud_score <= 40){
+					$out['cc_status'] = "WAITING FOR REVIEW";
+				}else{
+					$out['cc_status'] = "REJECTED";
+				}
+
+				$out['status'] = 'OK';
+				$out['fraud_score'] = $fraud_score;
+				$out['pesan_fraud'] = $pesan_fraud;
 			}else{
+				$out['status'] = 'OK';
+				$out['fraud_score'] = 100;
+				$out['pesan_fraud'] = $pesan_fraud;
 				$out['cc_status'] = "REJECTED";
 			}
 
-			$out['status'] = 'OK';
-			$out['fraud_score'] = $fraud_score;
-			$out['pesan_fraud'] = $pesan_fraud;
 		}else{
 			$out['status'] = 'FAIL';
 		}
