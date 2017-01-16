@@ -100,12 +100,12 @@ class Fds extends CI_Controller {
 				}
 
 				#4 Negara IP == Negara Credit Cart
-				// if(!$this->sc_check4($ip,$cc)){
-				// 	$fraud_score += 10;
-				// 	array_push($pesan_fraud, "[-] Negara pemesan tidak sama dengan negara pemilik CC");
-				// }else{
-				// 	array_push($pesan_fraud, "[+] Negara pemesan sama dengan negara pemilik CC");
-				// }
+				if(!$this->sc_check4($ip,$cc)){
+					$fraud_score += 10;
+					array_push($pesan_fraud, "[-] Negara pemesan tidak sama dengan negara pemilik CC");
+				}else{
+					array_push($pesan_fraud, "[+] Negara pemesan sama dengan negara pemilik CC");
+				}
 
 				#5 Transaksi Baru Lebih Besar Dari Rata2 10 Transaksi
 				if($this->sc_check5($harga,$cc)){
@@ -338,55 +338,5 @@ class Fds extends CI_Controller {
 
 		return $ret;
   }
-
-	public function test()
-	{
-		$email = "masbintangblog@gmail.com";
-		$ip	= "123.123.123.123";
-		$cc = "9147621234567890";
-		$harga = "6000000";
-		$nama_pemesan = "Gavin";
-		$nama_cc = "Noval";
-		// echo strtotime(date("Y-m-d H:i:s"));
-		?>
-			<pre>
-Nama Pemesan		: <?php echo $nama_pemesan."\n"; ?>
-Nama CC			: <?php echo $nama_cc."\n"; ?>
-IP			: <?php echo $ip."\n"; ?>
-Email			: <?php echo $email."\n"; ?>
-CC			: <?php echo $cc."\n"; ?>
-Harga			: <?php echo $harga."\n"; ?>
-
-#1 Nama Pemesan == Nama Credit Card
-<?php var_dump($this->sc_check1($nama_pemesan, $nama_cc)); ?>
-
-#2 Transaksi Dalam Jumlah Besar Berdekatan (12 Jam)
-<?php var_dump($this->sc_check2($harga,$cc)); ?>
-
-#3 CC Berasal Dari High Risk Country
-<?php var_dump($this->sc_check3($cc)); ?>
-
-#4 Negara IP == Negara Credit Cart
-(Tergantung Internet)
-<?php //var_dump($this->sc_check4($ip,$cc)); ?>
-
-#5 Transaksi Baru Lebih Besar Dari Rata2 10 Transaksi
-<?php var_dump($this->sc_check5($harga,$cc)); ?>
-
-#6 IP Berubah Secara Cepat (12 Jam)
-<?php var_dump($this->sc_check6($ip,$cc)); ?>
-
-#7 Menggunakan Multiple CC dalam 3 Hari
-<?php var_dump($this->sc_check7($ip)); ?>
-
-#8 Terdaftar sebagai member
-<?php var_dump($this->sc_check8($email)); ?>
-
-#9 Transaksi Sukses Sebelumnya
-<?php var_dump($this->sc_check9($email)); ?>
-
-			</pre>
-		<?php
-	}
 
 }

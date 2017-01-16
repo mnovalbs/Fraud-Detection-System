@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 11, 2017 at 03:11 PM
+-- Generation Time: Jan 16, 2017 at 03:13 PM
 -- Server version: 5.7.13-0ubuntu0.16.04.2
 -- PHP Version: 7.0.8-0ubuntu0.16.04.3
 
@@ -31,6 +31,13 @@ CREATE TABLE `blacklisted_cc` (
   `cc_number` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `blacklisted_cc`
+--
+
+INSERT INTO `blacklisted_cc` (`id`, `cc_number`) VALUES
+(1, '123456789');
+
 -- --------------------------------------------------------
 
 --
@@ -41,6 +48,13 @@ CREATE TABLE `blacklisted_email` (
   `id` int(11) NOT NULL,
   `email` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `blacklisted_email`
+--
+
+INSERT INTO `blacklisted_email` (`id`, `email`) VALUES
+(1, 'noval@mahasiswa.id');
 
 -- --------------------------------------------------------
 
@@ -56,6 +70,17 @@ CREATE TABLE `creditcard` (
   `bulan_expired` int(2) NOT NULL,
   `tahun_expired` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `creditcard`
+--
+
+INSERT INTO `creditcard` (`cc_id`, `order_key`, `cc_number`, `nama_cc`, `bulan_expired`, `tahun_expired`) VALUES
+(1, '078eecd91ae37308a0412bce0b0a7a1ee85488d5', '12125324', 'asdadsa', 1, 2017),
+(2, '255f4ee93c15e5a995daca01b7b99ef629a3bebe', '12124', 'asdsad', 1, 2017),
+(3, '549c478bec767295d392e7e86803c45c94153871', '85495858345', 'Gavin Wijaya', 1, 2017),
+(4, '549c478bec767295d392e7e86803c45c94153871', '85495858345', 'Gavin Wijaya', 1, 2017),
+(5, '99f4e64f82ab4aa0419b90e74475e65c61e169a3', '953859384234', 'Gavin Wijaya', 1, 2017);
 
 -- --------------------------------------------------------
 
@@ -123,7 +148,17 @@ INSERT INTO `detail_order` (`order_id`, `order_key`, `nama_pemesan`, `is_registe
 (25, '0c7bd0a685a297616ae96bd7ee515abb788b2ed3', 'Noval Bintang', 1, 767534, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'SJ', '123.123.123.123', '2017-01-11 08:02:08', 0),
 (26, 'ee9d37c1d446d4572064c39793436a4a0c4d020c', 'Noval Bintang', 1, 4748408, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'JT', '123.123.123.123', '2017-01-11 08:02:53', 0),
 (28, '2552cd3edc78bcf03a9322abc66ce656f4dcbc0f', 'Noval Bintang', 1, 261714, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'SJ', '123.123.123.123', '2017-01-11 08:05:29', 1),
-(29, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Noval Bintang', 0, 20000000, 'gavin@wijaya.com', 'PCB', 'HLP', '2017-01-13', 'SJ', '123.123.123.123', '2017-01-11 08:08:06', 1);
+(29, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Noval Bintang', 0, 20000000, 'gavin@wijaya.com', 'PCB', 'HLP', '2017-01-13', 'SJ', '123.123.123.123', '2017-01-11 08:08:06', 1),
+(30, 'e92a19e1d88a1c0643880d2c43e295028cbb1e69', 'Noval Bintang', 1, 774753, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'JT', '123.123.123.123', '2017-01-11 08:47:02', 1),
+(31, 'b0f55df94640f81184a9b70a1c7339eea11febe5', 'asdasd', 1, 573671, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'JT', '123.121.123.123', '2017-01-11 08:50:34', 1),
+(32, 'fb9421c635eba7a5234850838b7b1797008173cc', 'adsadsad', 1, 972711, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'GA', '123.121.123.123', '2017-01-11 08:51:00', 1),
+(33, '5a5e6f9fe9145b15af5eb56e6db1112a5e158fcd', 'asdsadsad', 1, 215060, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'SJ', '123.121.123.123', '2017-01-11 08:52:21', 1),
+(34, '078eecd91ae37308a0412bce0b0a7a1ee85488d5', 'asdasdas', 1, 697847, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'JT', '123.123.123.123', '2017-01-11 09:06:14', 1),
+(35, '255f4ee93c15e5a995daca01b7b99ef629a3bebe', 'asdsad', 1, 299191, 'masbintangblog@gmail.com', 'JKTA', 'JKTA', '2017-01-13', 'SJ', '123.123.123.123', '2017-01-11 09:08:37', 1),
+(36, '4b475f40b4bc68768a9eb8a32c4a9247e1d9806b', 'Noval Bintang', 0, 1926741, 'noval@bintang.com', 'JKTA', 'UPG', '2017-01-19', 'JT', '123.123.123.123', '2017-01-16 07:28:54', 0),
+(38, 'cd636cd7b4e6f7b4c31494821fa750286f05bbd0', 'Novasadasd', 0, 800603, 'noval@bintang.com', 'JKTA', 'JKTA', '2017-01-18', 'JT', '123.123.123.123', '2017-01-16 07:34:45', 0),
+(39, '549c478bec767295d392e7e86803c45c94153871', 'Gavin Wijaya', 0, 573432, 'gavin@wijaya.com', 'JKTA', 'JKTA', '2017-01-18', 'SJ', '222.222.111.111', '2017-01-16 07:35:44', 1),
+(40, '99f4e64f82ab4aa0419b90e74475e65c61e169a3', 'Gavin Wijaya', 0, 719597, 'gavin@wija.ya', 'JKTA', 'JKTA', '2017-01-18', 'JT', '110.1.1.1', '2017-01-16 07:37:08', 1);
 
 -- --------------------------------------------------------
 
@@ -175,7 +210,19 @@ INSERT INTO `penumpang` (`passenger_id`, `order_key`, `nama_penumpang`, `title`,
 (40, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Test 1', 1, 1, '2017-01-01'),
 (41, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Test 2', 1, 1, '2017-01-01'),
 (42, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Test 4', 1, 1, '2017-01-01'),
-(43, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Test 3', 1, 1, '2017-01-01');
+(43, '0508f5271bff80d0c43653ba78fd140dbb147bfa', 'Test 3', 1, 1, '2017-01-01'),
+(44, 'e92a19e1d88a1c0643880d2c43e295028cbb1e69', 'Noval', 1, 1, '2017-01-01'),
+(45, 'b0f55df94640f81184a9b70a1c7339eea11febe5', 'asasd', 1, 1, '2017-01-01'),
+(46, 'fb9421c635eba7a5234850838b7b1797008173cc', 'asdasd', 1, 1, '2017-01-01'),
+(47, '5a5e6f9fe9145b15af5eb56e6db1112a5e158fcd', 'asdasd', 1, 1, '2017-01-01'),
+(48, '078eecd91ae37308a0412bce0b0a7a1ee85488d5', 'asdad', 1, 1, '2017-01-01'),
+(49, '255f4ee93c15e5a995daca01b7b99ef629a3bebe', 'asdsad', 1, 1, '2017-01-01'),
+(50, '4b475f40b4bc68768a9eb8a32c4a9247e1d9806b', 'Noval BIntang', 1, 1, '1998-06-05'),
+(51, '4b475f40b4bc68768a9eb8a32c4a9247e1d9806b', 'Rani', 2, 1, '1998-04-04'),
+(52, '4b475f40b4bc68768a9eb8a32c4a9247e1d9806b', 'Gavin', 1, 2, '1996-06-19'),
+(53, 'cd636cd7b4e6f7b4c31494821fa750286f05bbd0', 'Noval', 1, 1, '2017-01-01'),
+(54, '549c478bec767295d392e7e86803c45c94153871', 'Gavin Wijaya', 1, 1, '2017-01-01'),
+(55, '99f4e64f82ab4aa0419b90e74475e65c61e169a3', 'Gavin Wijaya', 1, 1, '2017-01-01');
 
 --
 -- Indexes for dumped tables
@@ -229,17 +276,17 @@ ALTER TABLE `penumpang`
 -- AUTO_INCREMENT for table `blacklisted_cc`
 --
 ALTER TABLE `blacklisted_cc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `blacklisted_email`
 --
 ALTER TABLE `blacklisted_email`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `creditcard`
 --
 ALTER TABLE `creditcard`
-  MODIFY `cc_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `customer`
 --
@@ -249,12 +296,12 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `detail_order`
 --
 ALTER TABLE `detail_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT for table `penumpang`
 --
 ALTER TABLE `penumpang`
-  MODIFY `passenger_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `passenger_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 --
 -- Constraints for dumped tables
 --
